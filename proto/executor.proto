@@ -31,6 +31,7 @@ enum ExecType {
 	TypeWindow = 14;
 	TypeExpand = 15;   // Expand executor is used to expand underlying data sources to feed different grouping sets.
 	TypeExpand2 = 16;   // Expand2 executor is used to expand underlying data sources to feed different grouping sets.
+	TypeEasyGraphScan = 17;
 }
 
 // It represents a Executor.
@@ -151,6 +152,25 @@ message TableScan {
 	optional ANNQueryInfo ann_query = 13; // only used by TiFlash
 	repeated RuntimeFilter runtime_filter_list = 11; // only used by TiFlash
 	optional int32 max_wait_time_ms = 12  [(gogoproto.nullable) = false];
+}
+
+message EasyGraphScan {
+	optional int64 graph_id = 1 [(gogoproto.nullable) = false];
+	optional int64 label_id = 2 [(gogoproto.nullable) = false];
+	optional int64 schema_version = 3 [(gogoproto.nullable) = false];
+	optional bool is_vertex = 4 [(gogoproto.nullable) = false];
+	repeated ColumnInfo columns = 5;
+	optional bool desc = 6 [(gogoproto.nullable) = false];
+	repeated int64 primary_column_ids = 7;
+	optional EngineType next_read_engine = 8 [(gogoproto.nullable) = false]; // which engine we should in next step, only used by tiflash
+	repeated KeyRange ranges = 9 [(gogoproto.nullable) = false]; // For global read in join, we must point out the key ranges when we don't have the region info.
+	repeated int64 primary_prefix_column_ids = 10;
+	optional bool keep_order = 11;
+	optional bool is_fast_scan = 12; // fast_scan is a feature only provided by TiFlash (but not TiKV).
+	repeated Expr pushed_down_filter_conditions = 13; // conditions that are pushed down to storage layer, only used by TiFlash.
+	optional ANNQueryInfo ann_query = 14; // only used by TiFlash
+	repeated RuntimeFilter runtime_filter_list = 15; // only used by TiFlash
+	optional int32 max_wait_time_ms = 16  [(gogoproto.nullable) = false];
 }
 
 message PartitionTableScan {
