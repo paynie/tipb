@@ -56,6 +56,7 @@ message Executor {
 	optional uint64 fine_grained_shuffle_batch_size = 18 [(gogoproto.nullable) = false];
 	optional Expand expand = 19;
 	optional Expand2 expand2= 20;
+	optional EasyGraphScan easygraph_scan = 21;
 }
 
 enum ExchangeType {
